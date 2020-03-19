@@ -13,8 +13,10 @@
 
 <body>
     <header>
-        <nav class="hidden"></nav>
         <h1>News API</h1>
+
+        <nav class="hidden"></nav>
+        <div id="favoriteList" class="hidden"></div>
         <form action="#" id="searchForm">
             <label for="searchSourceData">Sources</label>
             <select name="searchSourceData" id="searchSourceData" minlength="2" required>
@@ -45,8 +47,7 @@
     <main>
         <h2 id="titleResearch"></h2>
 
-        <section id="newsList">
-        </section>
+        <section id="newsList"></section>
     </main>
     <script src="./js/app.js"></script>
     <script src="./js/fetch.class.js"></script>

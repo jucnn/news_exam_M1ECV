@@ -28,7 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const userNav = document.querySelector("header nav")
 
-
+    //Favorite
+    const favoriteList = document.querySelector("#favoriteList");
 
     // Functions
 
@@ -77,8 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         </figure>
                         <p>${liste[i].description}</p>
                         <a href="${liste[i].url}">Voir l'article</a>
+                        <button id="favoriteButton">Add ${liste[i].source.name} to favorite</button>
                     </article>
-            `
+            `;
+            addFavorite(document.querySelector('#favoriteButton'), liste[i]);
         }
     }
 
@@ -114,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 new FETCHrequest(`${newsApiUrl}/news/${searchSourceData.value}/null`, 'GET')
                     .fetch()
                     .then(fetchData => {
+                        displayTitleResearch(fetchData.data);
                         displayNewsList(fetchData.data.articles)
                     })
                     .catch(fetchError => {
@@ -213,17 +217,42 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
         userNav.classList.remove('hidden');
+        favoriteList.classList.remove('hidden');
+
 
         document.querySelector('#logoutBtn').addEventListener('click', () => {
             // Delete LocalStorage
             localStorage.removeItem(localSt);
             userNav.innerHTML = '';
-            // favoriteList.innerHTML = '';
+            favoriteList.innerHTML = '';
             registerForm.classList.remove('hidden');
             loginForm.classList.remove('hidden');
-            // favoriteList.classList.remove('open');
-            // favorite.classList.remove('open');
             searchForm.classList.remove('open');
+        })
+    }
+
+    //Favori
+
+    const addFavorite = (button, data) => {
+        button.addEventListener('click', () => {
+            new FETCHrequest(`${newsApiUrl}/bookmark/`, 'POST', {
+                    id: data.source.id,
+                    name: data.source.name,
+                    description: data.description,
+                    url: data.url,
+                    category: data.category,
+                    language: data.language,
+                    country: data.country,
+                    token: localStorage.getItem(localSt),
+                })
+                .fetch()
+                .then(fetchData => {
+                    console.log(fetchData);
+                    // checkUserToken('favorite')
+                })
+                .catch(fetchError => {
+                    displayError(fetchError.message)
+                })
         })
     }
 
