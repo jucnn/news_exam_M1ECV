@@ -12,13 +12,12 @@
 <body>
     <header>
         <h1>News API</h1>
-        <form action="#" id="searchSourceForm">
-            <input type="text" name="searchSourceData" id="searchSourceData" minlength="2">
-            <button>Search source</button>
-        </form>
-        <form action="#" id="searchKeywordForm">
-            <input type="text" name="searchKeywordData" id="searchKeywordData" minlength="2">
-            <button>Search keyword</button>
+        <form action="#" id="searchForm">
+            <label for="searchSourceData">Sources</label>
+            <input type="text" name="searchSourceData" id="searchSourceData" minlength="2" required>
+            <label for="searchKeywordData">Keywords</label>
+            <input type="text" name="searchKeywordData" id="searchKeywordData" minlength="2" placeholder="(optional)">
+            <button>Search</button>
         </form>
     </header>
 

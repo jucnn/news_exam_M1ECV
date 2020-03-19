@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Variables DOM
 
-    const searchSourceForm = document.querySelector('#searchSourceForm');
+    const searchForm = document.querySelector('#searchForm');
     const searchKeywordForm = document.querySelector('#searchKeywordData');
     const newsList = document.querySelector('#newsList');
     const searchSourceData = document.querySelector('#searchSourceData');
@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const displayNewsList = liste => {
         searchSourceData.value = '';
+        searchKeywordData.value = '';
+
         newsList.innerHTML = '';
 
         for (let i = 0; i < liste.length; i++) {
@@ -37,13 +39,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const getFormSubmit = () => {
 
-        searchSourceForm.addEventListener("submit", event => {
-            console.log("coucou");
-
+        searchForm.addEventListener("submit", event => {
             event.preventDefault();
 
-            if (searchSourceData.value.length > 0) {
+            if (searchSourceData.value.length > 0 && searchKeywordData.value.length === 0) {
                 new FETCHrequest(`${newsApiUrl}news/${searchSourceData.value}/null`, 'GET')
+                    .fetch()
+                    .then(fetchData => {
+                        displayNewsList(fetchData.data.articles)
+                    })
+                    .catch(fetchError => {
+                        console.log(fetchError)
+                    })
+            } else if (searchSourceData.value.length > 0 && searchKeywordData.value.length > 0) {
+                new FETCHrequest(`${newsApiUrl}news/${searchSourceData.value}/${searchKeywordData.value}`, 'GET')
                     .fetch()
                     .then(fetchData => {
                         displayNewsList(fetchData.data.articles)
