@@ -15,7 +15,7 @@
     <header>
         <h1>News Feed</h1>
         <nav class="hidden"></nav>
-        <div id="favoriteList" class="hidden"></div>
+        <ul id="favoriteList" class="hidden"></ul>
         <form action="#" id="searchForm">
             <label for="searchSourceData">Sources</label>
             <select name="searchSourceData" id="searchSourceData" minlength="2" required>
@@ -23,8 +23,8 @@
             </select>
             <label for="searchKeywordData">Keywords</label>
             <input type="text" name="searchKeywordData" id="searchKeywordData" minlength="2" placeholder="(optional)">
-            <button>Search</button>
-            <button id="favoriteButton">Add the newspaper to your Favorite</button>
+            <button id="searchButton">Search</button>
+            <button id="favoriteButton"></button>
         </form>
         <form action="#" id="registerForm">
             <h2>Create your profil</h2>
