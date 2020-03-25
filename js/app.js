@@ -30,20 +30,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Favorite
     const favoriteList = document.querySelector("#favoriteList");
+    const favoriteButton = document.querySelector("#favoriteButton");
 
-    // Functions
+    //// Functions
 
-
-    const displaySourceOptions = liste => {
-        for (let i = 0; i < liste.length; i++) {
-            searchSourceData.innerHTML += `
-                    <option value="${liste[i].id}">${liste[i].name}</option>
-            `
+    // set many attributes to one element
+    function setAttributes(el, attrs) {
+        for (var key in attrs) {
+            el.setAttribute(key, attrs[key]);
         }
     }
 
+    // display source + give all elmts to favorite button
+    const displaySourceOptions = liste => {
+        for (let i = 0; i < liste.length; i++) {
+            searchSourceData.innerHTML += `
+                    <option news-id="${liste[i].id}" news-name="${liste[i].name}" news-description="${liste[i].description}" news-url="${liste[i].url}" news-category="${liste[i].category}" news-language="${liste[i].language}" news-country="${liste[i].country}">${liste[i].name}</option>
+            `
+        }
+
+        searchSourceData.addEventListener('change', function () {
+            var selectedOption = searchSourceData.options[searchSourceData.selectedIndex];
+            var newsId = selectedOption.getAttribute('news-id');
+            var newsName = selectedOption.getAttribute('news-name');
+            var newsDescription = selectedOption.getAttribute('news-description');
+            var newsUrl = selectedOption.getAttribute('news-url');
+            var newsCategory = selectedOption.getAttribute('news-category');
+            var newsLanguage = selectedOption.getAttribute('news-language');
+            var newsCountry = selectedOption.getAttribute('news-country');
+            // Add that data to the <p>
+            console.log(newsId, newsName, newsDescription, newsUrl, newsCategory, newsLanguage, newsCountry);
+            // console.log(selectedOption.getAttribute('news-url'));
+            setAttributes(favoriteButton, {
+                "add-news-id": newsId,
+                "add-news-name": newsName,
+                "add-news-description": newsDescription,
+                "add-news-url": newsUrl,
+                "add-news-category" : newsCategory,
+                "add-news-language" : newsLanguage,
+                "add-news-country" : newsCountry
+            });
+        })
+
+    }
+
     const getSource = () => {
-        new FETCHrequest(`${newsApiUrl}/news/sources`, 'GET')
+        new FETCHrequest(`${newsApiUrl}/news/sources`, 'POST', {
+            news_api_token: "d169b13a24fb4632bdaf82d99bc1b99f"
+        })
             .fetch()
             .then(fetchData => {
                 displaySourceOptions(fetchData.data.sources)
@@ -114,7 +148,9 @@ document.addEventListener('DOMContentLoaded', () => {
         searchForm.addEventListener("submit", event => {
             event.preventDefault();
             if (searchSourceData.value.length > 0 && searchKeywordData.value.length === 0) {
-                new FETCHrequest(`${newsApiUrl}/news/${searchSourceData.value}/null`, 'GET')
+                new FETCHrequest(`${newsApiUrl}/news/${searchSourceData.value}/null`, 'POST', {
+                    news_api_token : "d169b13a24fb4632bdaf82d99bc1b99f"
+                })
                     .fetch()
                     .then(fetchData => {
                         displayTitleResearch(fetchData.data);
@@ -124,7 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.log(fetchError)
                     })
             } else if (searchSourceData.value.length > 0 && searchKeywordData.value.length > 0) {
-                new FETCHrequest(`${newsApiUrl}/news/${searchSourceData.value}/${searchKeywordData.value}`, 'GET')
+                new FETCHrequest(`${newsApiUrl}/news/${searchSourceData.value}/${searchKeywordData.value}`, 'POST', {
+                    news_api_token : "d169b13a24fb4632bdaf82d99bc1b99f"
+                })
                     .fetch()
                     .then(fetchData => {
                         displayTitleResearch(fetchData.data);
@@ -212,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const displayNav = name => {
         userNav.innerHTML = `
-                <h1>Hello ${name}</h1>
+                <h2>Hello ${name}</h2>
                 <button id="logoutBtn">Log out</button>
             `;
 
