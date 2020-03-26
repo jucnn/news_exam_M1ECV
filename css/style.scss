@@ -1,3 +1,38 @@
 .hidden{
     display: none;
 }
+
+article {
+    display: flex;
+    position: relative;
+    margin:20px;
+    width: 80vw;
+    margin:10px auto;
+
+    figure{
+        margin: 0;
+    }
+
+    span {
+        position: absolute;
+        top:0;
+        left:0;
+        background-color: black;
+        color:white;
+        padding: 5px 10px;
+    }
+
+    div:nth-child(1), 
+    div:nth-child(2) {
+        width: 50%;
+    }
+    div:nth-child(2) {
+        margin-left: 20px;
+    }
+
+    a {
+        text-transform: uppercase;
+        font-size:14px;
+        text-decoration: underline;
+    }
+}

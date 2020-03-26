@@ -1,4 +1,42 @@
 .hidden {
   display: none;
 }
+
+article {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  margin: 20px;
+  width: 80vw;
+  margin: 10px auto;
+}
+
+article figure {
+  margin: 0;
+}
+
+article span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: black;
+  color: white;
+  padding: 5px 10px;
+}
+
+article div:nth-child(1),
+article div:nth-child(2) {
+  width: 50%;
+}
+
+article div:nth-child(2) {
+  margin-left: 20px;
+}
+
+article a {
+  text-transform: uppercase;
+  font-size: 14px;
+  text-decoration: underline;
+}
 /*# sourceMappingURL=style.css.map */

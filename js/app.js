@@ -33,6 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
     //Favorite
     const favoriteList = document.querySelector("#favoriteList");
     const favoriteButton = document.querySelector("#favoriteButton");
+    let arraySources = new Array();
+
 
     //// Functions
 
@@ -43,13 +45,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
     const getSource = () => {
         new FETCHrequest(`${newsApiUrl}/news/sources`, 'POST', {
                 news_api_token: newsApiToken
             })
             .fetch()
             .then(fetchData => {
-                displaySourceOptions(fetchData.data.sources)
+                getSourceTable(fetchData.data.sources);
             })
             .catch(fetchError => {
                 console.log(fetchError)
@@ -58,51 +61,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     getSource();
 
-    // display source + give all elmts to favorite button
-    const displaySourceOptions = liste => {
-
+    const getSourceTable = liste => {
         for (let i = 0; i < liste.length; i++) {
-            searchSourceData.innerHTML += `
-                    <option news-id="${liste[i].id}" news-name="${liste[i].name}" news-description="${liste[i].description}" news-url="${liste[i].url}" news-category="${liste[i].category}" news-language="${liste[i].language}" news-country="${liste[i].country}" value="${liste[i].id}">${liste[i].name}</option>
-            `
+            arraySources.push(liste[i]);
         }
 
-        searchSourceData.addEventListener('change', function () {
-            var selectedOption = searchSourceData.options[searchSourceData.selectedIndex];
-            favoriteButton.innerHTML = `Add ${selectedOption.getAttribute('news-name')} to your bookmarks`;
-
-            // console.log(selectedOption.getAttribute('news-url'));
-            setAttributes(favoriteButton, {
-                "add-news-id": selectedOption.getAttribute('news-id'),
-                "add-news-name": selectedOption.getAttribute('news-name'),
-                "add-news-description": selectedOption.getAttribute('news-description'),
-                "add-news-url": selectedOption.getAttribute('news-url'),
-                "add-news-category": selectedOption.getAttribute('news-category'),
-                "add-news-language": selectedOption.getAttribute('news-language'),
-                "add-news-country": selectedOption.getAttribute('news-country')
-            });
-
-
-            const dataFavorite = {
-                id: favoriteButton.getAttribute('add-news-id'),
-                name: favoriteButton.getAttribute('add-news-name'),
-                description: favoriteButton.getAttribute('add-news-description'),
-                url: favoriteButton.getAttribute('add-news-url'),
-                category: favoriteButton.getAttribute('add-news-category'),
-                language: favoriteButton.getAttribute('add-news-language'),
-                country: favoriteButton.getAttribute('add-news-country'),
-            };
-
-
-            addFavorite(favoriteButton, dataFavorite);
-        })
-
-
-        // addFavorite(favoriteButton);
+        displaySourceOptions(arraySources);
     }
 
-    const addFavorite = (button, data) => {
-        button.addEventListener('click', event => {
+    searchSourceData.addEventListener('change', event => {
+        var selectedOption = searchSourceData.options[searchSourceData.selectedIndex];
+        favoriteButton.innerHTML = `Add ${selectedOption.getAttribute('news-name')} to your bookmarks`;
+
+        for (let item of arraySources) {
+            if (item.id === event.target.value) {
+                console.log(item);
+                addFavorite(item);
+            }
+        }
+
+    })
+
+    console.log(arraySources);
+
+
+    // addFavorite();
+    const addFavorite = (data) => {
+        favoriteButton.addEventListener('click', event => {
             event.preventDefault()
             new FETCHrequest(`${newsApiUrl}/bookmark/`, 'POST', {
                     id: data.id,
@@ -116,9 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .fetch()
                 .then(fetchData => {
-                    console.log(fetchData);
-                    displayFavorite(fetchData.data.data);
-                    // checkUserToken('favorite')
+                    console.log(fetchData.data.data);
+                    checkUserToken()
+                     displayFavorite(fetchData.data.data);
                 })
                 .catch(fetchError => {
                     console.log(fetchError);
@@ -127,17 +112,33 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
+    // display source + give all elmts to favorite button
+    const displaySourceOptions = liste => {
+
+        for (let i = 0; i < liste.length; i++) {
+            // console.log(liste[i]);
+
+            searchSourceData.innerHTML += `
+                    <option  news-name="${liste[i].name}" value="${liste[i].id}">${liste[i].name}</option>
+            `
+        }
+    }
+
+
     const displayFavorite = data => {
+        console.log(data);
+         for (let item of data) {
+            console.log(item);
+         }
 
-        favoriteList.innerHTML += `
-                    <li>
-                        <span news-id="${data._id}">${data.name}</span>
-                        <button class="deleteFavoriteButton">Delete</button>
-
-                    </li>
-                `;
-
-        deleteFavorite(document.querySelectorAll('.deleteFavoriteButton'));
+        // for (let i = 0; i < data.length; i++) {
+        //     favoriteList.innerHTML += `
+        //                     <li>
+        //                         <span news-id="${data[i]._id}">${data[i].name}</span>
+        //                         <button class="deleteFavoriteButton" news-id="${data[i]._id}">Delete</button>
+        //                     </li>
+        //                 `;
+        // }
 
     }
 
@@ -145,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let item of favorites) {
             item.addEventListener('click', () => {
                 new FETCHrequest(`${newsApiUrl}/bookmark/${item.getAttribute('news-id')}`, 'DELETE', {
-                        token: localStorage.getItem(localSt),
+                        token: localStorage.getItem(localSt)
                     })
                     .fetch()
                     .then(fetchData => console.log(fetchData))
@@ -160,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const displayTitleResearch = title => {
         titleResearch.innerHTML = `
-        ${title.totalResults} results for ${searchSourceData.value} and ${searchKeywordData.value}
+        ${title.totalResults} results for the newspaper : ${searchSourceData.value} and the keywords : ${searchKeywordData.value}
         `
 
     }
@@ -172,15 +173,21 @@ document.addEventListener('DOMContentLoaded', () => {
         newsList.innerHTML = '';
 
         for (let i = 0; i < 10; i++) {
+            console.log(liste);
             newsList.innerHTML += `
                     <article>
-                        <span>${liste[i].author}</span>
+                        <div>
+                        <span>${liste[i].source.name}</span>
                         <figure>
                             <img src="${liste[i].urlToImage}" alt="${liste[i].title}">
-                            <figcaption movie-id="${liste[i].id}">${liste[i].title}</figcaption>
+            
                         </figure>
+                        </div>
+                        <div>
+                        <h3 movie-id="${liste[i].id}">${liste[i].title}</h3>
                         <p>${liste[i].description}</p>
                         <a href="${liste[i].url}">Voir l'article</a>
+                        </div>
                     </article>
             `;
         }
@@ -195,8 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
             )
             .fetch()
             .then(fetchData => {
-                // console.log(fetchData);
-
                 displayNav(fetchData.data.user.firstname);
 
                 registerForm.classList.add('hidden');
@@ -340,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //check if user is connected
     if (localStorage.getItem(localSt) !== null) {
-        console.log(localStorage.getItem(localSt))
+        // console.log(localStorage.getItem(localSt))
         checkUserToken();
 
     } else {
