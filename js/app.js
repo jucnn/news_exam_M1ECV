@@ -81,10 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
     })
-
-    console.log(arraySources);
-
-
     // addFavorite();
     const addFavorite = (data) => {
         favoriteButton.addEventListener('click', event => {
@@ -103,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(fetchData => {
                     console.log(fetchData.data.data);
                     checkUserToken()
-                     displayFavorite(fetchData.data.data);
                 })
                 .catch(fetchError => {
                     console.log(fetchError);
@@ -112,11 +107,9 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
-    // display source + give all elmts to favorite button
     const displaySourceOptions = liste => {
 
         for (let i = 0; i < liste.length; i++) {
-            // console.log(liste[i]);
 
             searchSourceData.innerHTML += `
                     <option  news-name="${liste[i].name}" value="${liste[i].id}">${liste[i].name}</option>
@@ -125,24 +118,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    const displayFavorite = data => {
-        console.log(data);
-         for (let item of data) {
-            console.log(item);
-         }
+    const displayFavorite = bookmarks => {
+        console.log(bookmarks);
+        favoriteList.innerHTML = ''
+        for (let item of bookmarks) {
+            favoriteList.innerHTML += `
+                            <li><button>${item.name}</button>
+                                <button news-id="${item._id}" class="deleteFavoriteButton disable">X</button>
+                            </li>
+                        `;
+        }
 
-        // for (let i = 0; i < data.length; i++) {
-        //     favoriteList.innerHTML += `
-        //                     <li>
-        //                         <span news-id="${data[i]._id}">${data[i].name}</span>
-        //                         <button class="deleteFavoriteButton" news-id="${data[i]._id}">Delete</button>
-        //                     </li>
-        //                 `;
-        // }
+        const deleteFavoriteButton = document.querySelectorAll(".deleteFavoriteButton");
+
+        deleteFavorite(deleteFavoriteButton);
 
     }
 
     const deleteFavorite = favorites => {
+        console.log(favorites)
         for (let item of favorites) {
             item.addEventListener('click', () => {
                 new FETCHrequest(`${newsApiUrl}/bookmark/${item.getAttribute('news-id')}`, 'DELETE', {
@@ -203,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .fetch()
             .then(fetchData => {
                 displayNav(fetchData.data.user.firstname);
-
+                displayFavorite(fetchData.data.bookmark);
                 registerForm.classList.add('hidden');
                 loginForm.classList.add('hidden');
 
@@ -328,7 +322,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         userNav.classList.remove('hidden');
         favoriteList.classList.remove('hidden');
-
 
         document.querySelector('#logoutBtn').addEventListener('click', () => {
             // Delete LocalStorage

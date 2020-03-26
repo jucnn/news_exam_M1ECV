@@ -2,6 +2,31 @@
   display: none;
 }
 
+#bookmarks {
+  border: 1px solid grey;
+  padding: 10px;
+  margin: 20px 0;
+}
+
+#favoriteList {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  list-style-type: none;
+  margin-bottom: 0;
+}
+
+#favoriteList li {
+  margin: 5px;
+  position: relative;
+}
+
+#favoriteList .deleteFavoriteButton {
+  padding: 0 1rem;
+}
+
 article {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -38,5 +63,10 @@ article a {
   text-transform: uppercase;
   font-size: 14px;
   text-decoration: underline;
+}
+
+#favoriteButton.disable {
+  pointer-events: none;
+  background-color: grey;
 }
 /*# sourceMappingURL=style.css.map */
