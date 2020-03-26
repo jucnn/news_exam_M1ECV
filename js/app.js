@@ -73,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var selectedOption = searchSourceData.options[searchSourceData.selectedIndex];
         favoriteButton.innerHTML = `Add ${selectedOption.getAttribute('news-name')} to your bookmarks`;
 
+        
         for (let item of arraySources) {
             if (item.id === event.target.value) {
                 console.log(item);
@@ -157,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
         titleResearch.innerHTML = `
         ${title.totalResults} results for the newspaper : ${searchSourceData.value} and the keywords : ${searchKeywordData.value}
         `
-
     }
 
     const displayNewsList = liste => {
