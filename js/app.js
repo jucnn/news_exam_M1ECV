@@ -144,12 +144,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         token: localStorage.getItem(localSt)
                     })
                     .fetch()
-                    .then(fetchData => console.log(fetchData))
+                    .then(fetchData => {
+                        console(fetchData);
+                    })
                     .catch(fetchError => {
                         console.log(fetchError)
                     })
             })
+            
         }
+
     }
 
 
@@ -321,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
         userNav.classList.remove('hidden');
-        favoriteList.classList.remove('hidden');
+        // favoriteList.classList.remove('hidden');
 
         document.querySelector('#logoutBtn').addEventListener('click', () => {
             // Delete LocalStorage
