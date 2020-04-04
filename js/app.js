@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userNav = document.querySelector("header nav")
 
     //Favorite
+    const bookmarks = document.querySelector("#bookmarks");
     const favoriteList = document.querySelector("#favoriteList");
     const favoriteButton = document.querySelector("#favoriteButton");
     let arraySources = new Array();
@@ -73,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var selectedOption = searchSourceData.options[searchSourceData.selectedIndex];
         favoriteButton.innerHTML = `Add ${selectedOption.getAttribute('news-name')} to your bookmarks`;
 
-        
+
         for (let item of arraySources) {
             if (item.id === event.target.value) {
                 console.log(item);
@@ -151,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.log(fetchError)
                     })
             })
-            
+
         }
 
     }
@@ -169,26 +170,32 @@ document.addEventListener('DOMContentLoaded', () => {
         searchKeywordData.value = '';
 
         newsList.innerHTML = '';
+        console.log(liste);
 
-        for (let i = 0; i < 10; i++) {
-            console.log(liste);
-            newsList.innerHTML += `
+        if (liste.length > 0) {
+            for (let item of liste) {
+                newsList.innerHTML += `
                     <article>
                         <div>
-                        <span>${liste[i].source.name}</span>
                         <figure>
-                            <img src="${liste[i].urlToImage}" alt="${liste[i].title}">
+                         <span>${new Intl.DateTimeFormat('en-GB').format(new Date(item.publishedAt))}</span>
+                            <img src="${item.urlToImage}" alt="${item.title}">
             
                         </figure>
                         </div>
                         <div>
-                        <h3 movie-id="${liste[i].id}">${liste[i].title}</h3>
-                        <p>${liste[i].description}</p>
-                        <a href="${liste[i].url}">Voir l'article</a>
+                        <h3 movie-id="${item.id}">${item.title}</h3>
+                        <p>${item.description}</p>
+                        <a href="${item.url}">READ THE ARTICLE</a>
                         </div>
                     </article>
             `;
+            }
         }
+        else {
+            newsList.innerHTML += "No news found for your research, try an other one !"
+        }
+
     }
 
     const checkUserToken = () => {
@@ -325,7 +332,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
         userNav.classList.remove('hidden');
-        // favoriteList.classList.remove('hidden');
+        bookmarks.classList.remove('hidden');
+        favoriteButton.classList.remove('hidden');
 
         document.querySelector('#logoutBtn').addEventListener('click', () => {
             // Delete LocalStorage
@@ -335,6 +343,8 @@ document.addEventListener('DOMContentLoaded', () => {
             registerForm.classList.remove('hidden');
             loginForm.classList.remove('hidden');
             searchForm.classList.remove('open');
+            bookmarks.classList.add('hidden');
+            favoriteButton.classList.add('hidden');
         })
     }
 
